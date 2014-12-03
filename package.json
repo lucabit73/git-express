@@ -1,0 +1,9 @@
+{
+	"author": "Luca Querci <lucabit73@gmail.com>",
+	"name": "GitExpress",
+	"description": "Node-based application for emergency push",
+	"dependencies": {
+		"serialport": "^1.4.6",
+		"socket.io": "^1.1.0"
+	}
+}
