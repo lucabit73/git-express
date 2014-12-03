@@ -1,7 +1,10 @@
 git-express
 ===========
 
-Node-based application for emergency git-push
+Node-based application for emergency git-push width Arduino button
 
-Set up your arduino port and work-directory in config.json and...
+Replace config.json data width your Arduino-port and working-directory,
+
+connect your Arduino and.. 
+
 get ready for your express push!
