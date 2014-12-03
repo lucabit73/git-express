@@ -25,8 +25,8 @@ sp.on("data", function (data) {
     	console.log('green push');
 
     	var spawn = require('child_process').spawn,
-		    //ls    = spawn('ls', ['-lh',''], { cwd: config.env });
-		    gitadd = spawn('git', ['push','-u', 'origin', 'master'], { cwd: config.env });
+		    gitadd    = spawn('ls', ['-lh',''], { cwd: config.env });
+		    //gitadd = spawn('git', ['push','-u', 'origin', 'master'], { cwd: config.env });
 
 		gitadd.stdout.on('data', function (data) {
 		  console.log('stdout: ' + data);
@@ -38,6 +38,7 @@ sp.on("data", function (data) {
 
 		gitadd.on('close', function (code) {
 		  console.log('child process exited with code ' + code);
+		  //sp.write('redon');
 		});
     }      
 });
