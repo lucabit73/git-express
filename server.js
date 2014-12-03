@@ -14,10 +14,10 @@ sp.on("data", function (data) {
     //azioni differenti a seconda dello stato in cui mi trovo
 
     data = data.substring(0, data.length-1);
-    console.log("Arduino say: ",data);
+    //console.log("Arduino say: ",data);
 
     if (data == "Power ON - MASBOOTH"){
-        sp.write('Ready to Push!!');
+        console.log('Ready to Push!!');
     }
 
 
