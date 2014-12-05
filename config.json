@@ -1,4 +1,6 @@
 {
 	"serial_port": "/dev/cu.usbserial-A7006SAe",
-	"env": "/Users/roll/Documents/git_express/"
+	"env": "/Users/roll/Documents/git_express/",
+	"blink_time": 1500,
+	"add_time": 4000
 }

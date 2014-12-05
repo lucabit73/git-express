@@ -1,9 +1,18 @@
-const int greenPin = 7;
-const int redPin = 6;
+const int greenPin = 6;
 const int buttonGreen = 8;
-const int buttonRed = 3;
+int fade = 0;
+int bright = 0;
+int fadeAmount = 5;
+int howLongToWait = 100;                 // Wait this many millis()
+int lastTimeItHappened = 0;              // The clock time in millis()
+int howLongItsBeen;                         // A calculated value
+int start_base = 0;
+int br_start;
+int br_end;
+int sign_end;
+int sign_err;
+int blink_val = 255;
 
-const int flashPin = 4;
 
 char inData[20]; // Allocate some space for the string
 char inChar=-1; // Where to store the character read
@@ -11,19 +20,13 @@ byte index = 0; // Index into array; where to store the character
 int ledStateGreen = HIGH;         // the current state of the output pin
 int buttonStateGreen;             // the current reading from the input pin
 int lastButtonStateGreen = LOW;   // the previous reading from the input pin
-int ledStateRed = HIGH;         // the current state of the output pin
-int buttonStateRed;             // the current reading from the input pin
-int lastButtonStateRed = LOW;
 long lastDebounceTime = 0; 
 long debounceDelay = 10;
 void setup() {
   pinMode(greenPin, OUTPUT);
-  pinMode(redPin, OUTPUT);
-  pinMode(flashPin, OUTPUT);
   pinMode(buttonGreen, INPUT);
-  pinMode(buttonRed, INPUT);
   Serial.begin(9600);
-  Serial.println("Power ON - MASBOOTH");
+  Serial.println("Power ON - GIT EXPRESS");
 }
 
 
@@ -58,29 +61,14 @@ char Comp(char* This){
     
 void loop() {  
     /* read button */  
-  int readingRed = digitalRead(buttonRed);
   int readingGreen = digitalRead(buttonGreen);
   
-  if (readingRed != lastButtonStateRed) {
-    // reset the debouncing timer
-    lastDebounceTime = millis();
-  } 
   if (readingGreen != lastButtonStateGreen) {
     // reset the debouncing timer
     lastDebounceTime = millis();
   } 
   
   if ((millis() - lastDebounceTime) > debounceDelay) {
-    if (readingRed != buttonStateRed) {
-      buttonStateRed = readingRed;
-
-      // only toggle the LED if the new button state is HIGH
-      if (buttonStateRed == HIGH) {
-        ledStateRed = !ledStateRed;
-        
-        Serial.println("red");
-      }
-    }
     if (readingGreen != buttonStateGreen) {
       buttonStateGreen = readingGreen;
 
@@ -88,7 +76,7 @@ void loop() {
       if (buttonStateGreen == HIGH) {
         ledStateGreen = !ledStateGreen;
         
-        Serial.println("green");
+        Serial.println("start");
       }
     }
   }
@@ -96,33 +84,68 @@ void loop() {
 
   // save the reading.  Next time through the loop,
   // it'll be the lastButtonState:
-  lastButtonStateRed = readingRed;
   lastButtonStateGreen = readingGreen;
-    /*end read button */
-    
-    
-    
-    if(Comp("redon")==0){
-        digitalWrite(redPin, HIGH);      
-    }
-    if(Comp("redoff")==0){
-        digitalWrite(redPin, LOW);      
-    }
+  /*end read button */
   
-    
-    if(Comp("greenon")==0){
-        digitalWrite(greenPin, HIGH);      
+  if(Comp("start")==0){
+    start_base = 1;
+    lastTimeItHappened = 0;
+    //
+    bright = 30;    
+    br_start = 30;
+    br_end = 100;
+    howLongToWait = 50;
+    fadeAmount = 2;
+  }
+  
+  if(Comp("wait")==0){
+    lastTimeItHappened = 0;
+    //
+    bright = 50;
+    br_start = 50;
+    br_end = 255;
+    fadeAmount = 5;
+    howLongToWait = 15;
+  }
+  
+  if(Comp("end")==0){
+    start_base = 0;
+    sign_end = 1;
+    lastTimeItHappened = millis();
+    analogWrite(greenPin, blink_val);
+    //
+    howLongToWait = 300;
+  }
+  if(Comp("err")==0){
+      sign_err = 1;
+      start_base = 0;
+  }
+   
+  if (start_base == 1){
+    howLongItsBeen = millis() - lastTimeItHappened;
+    if ( howLongItsBeen >= howLongToWait ) {
+      // do it (again)
+      analogWrite(greenPin, bright);
+      bright = bright + fadeAmount;
+      if (bright <= br_start || bright >= br_end) {
+        fadeAmount = -fadeAmount ; 
+      }
+      lastTimeItHappened = millis();
     }
-    if(Comp("greenoff")==0){
-        digitalWrite(greenPin, LOW);      
+  }
+  
+  if (sign_end == 1){
+    howLongItsBeen = millis() - lastTimeItHappened;
+    if ( howLongItsBeen >= howLongToWait ) {
+      blink_val = abs (blink_val-255);
+      analogWrite(greenPin, blink_val);
+      lastTimeItHappened = millis();
     }
-    
-    
-    if(Comp("flashon")==0){
-        digitalWrite(flashPin, HIGH);      
-    }
-    if(Comp("flashoff")==0){
-        digitalWrite(flashPin, LOW);      
-    }
+  }
+  
+  if (sign_err == 1){
+  
+  }
     
 }
+
