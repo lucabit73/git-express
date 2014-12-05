@@ -27,35 +27,34 @@ sp.on("data", function (data) {
     	console.log('Push start!');
     	sp.write('wait');
 
-		try{
-			var spawn = require('child_process').spawn,
-			command = spawn('ls', [], { cwd: config.env });
-			uyyy;
-			//command = spawn('git', ['push','-u', 'origin', 'master'], { cwd: config.env });
-			command.stdout.on('data', function (data) {
-			  console.log('stdout: ' + data);
-			});
+		/*var spawn = require('child_process').spawn,
+		command = spawn('ls', [], { cwd: config.env });
+		//command = spawn('git', ['push','-u', 'origin', 'master'], { cwd: config.env });
+		command.stdout.on('data', function (data) {
+		  console.log('stdout: ' + data);
+		});
+		command.stderr.setEncoding('utf8');
+		command.stderr.on('data', function (data) {
+		  console.log('stderr: ' + data);
+		  err_signal();
+		});
 
-			command.stderr.on('data', function (data) {
-			  console.log('stderr: ' + data);
-			  err_signal();
-			});
+		command.on('close', function (code) {
+		  console.log('child process exited with code ' + code);
+		  end_signal();
+		});*/
 
-			command.on('close', function (code) {
-			  console.log('child process exited with code ' + code);
-			  end_signal();
-			});
-		}
-		catch(er){
-			console.log('ERRRORE ERMENDO',er);
-		}
-    	
-		
-		    // no error occured, continue on
-			    
-
-
-		
+		var exec = require('child_process').exec,
+		command = exec('git -C '+config.env+' push -u origin master', function(error, stdout, stderr){
+			if (error !== null) {
+		      console.log('exec error: ' + error);
+		      err_signal();
+		    } else {
+		    	console.log(stdout);
+		    	end_signal();
+		    }
+			
+		});
     }      
 });
 
