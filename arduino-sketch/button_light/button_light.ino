@@ -3,14 +3,13 @@ const int buttonGreen = 8;
 int fade = 0;
 int bright = 0;
 int fadeAmount = 5;
-int howLongToWait = 100;                 // Wait this many millis()
-int lastTimeItHappened = 0;              // The clock time in millis()
-int howLongItsBeen;                         // A calculated value
+int howLongToWait = 100;     // Wait this many millis()
+int lastTimeItHappened = 0;  // The clock time in millis()
+int howLongItsBeen;          // A calculated value
 int start_base = 0;
 int br_start;
 int br_end;
-int sign_end;
-int sign_err;
+int sign_blink;
 int blink_val = 255;
 
 
@@ -88,8 +87,9 @@ void loop() {
   /*end read button */
   
   if(Comp("start")==0){
+    sign_blink = 0;
     start_base = 1;
-    lastTimeItHappened = 0;
+    lastTimeItHappened = millis();
     //
     bright = 30;    
     br_start = 30;
@@ -99,7 +99,7 @@ void loop() {
   }
   
   if(Comp("wait")==0){
-    lastTimeItHappened = 0;
+    lastTimeItHappened = millis();
     //
     bright = 50;
     br_start = 50;
@@ -110,16 +110,22 @@ void loop() {
   
   if(Comp("end")==0){
     start_base = 0;
-    sign_end = 1;
+    sign_blink = 1;
     lastTimeItHappened = millis();
     analogWrite(greenPin, blink_val);
     //
     howLongToWait = 300;
   }
   if(Comp("err")==0){
-      sign_err = 1;
-      start_base = 0;
+    start_base = 0;  
+    sign_blink = 1;
+    lastTimeItHappened = millis();
+    analogWrite(greenPin, blink_val);
+    //
+    howLongToWait = 80;
   }
+   
+//------------------   
    
   if (start_base == 1){
     howLongItsBeen = millis() - lastTimeItHappened;
@@ -134,17 +140,13 @@ void loop() {
     }
   }
   
-  if (sign_end == 1){
+  if (sign_blink == 1){
     howLongItsBeen = millis() - lastTimeItHappened;
     if ( howLongItsBeen >= howLongToWait ) {
       blink_val = abs (blink_val-255);
       analogWrite(greenPin, blink_val);
       lastTimeItHappened = millis();
     }
-  }
-  
-  if (sign_err == 1){
-  
   }
     
 }
