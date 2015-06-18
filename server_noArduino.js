@@ -11,23 +11,23 @@ addChild = addExec('git -C '+config.env+' add .',
 	function(error, stdout, stderr){
 		if (error !== null){
 			console.log('add exec error: ' + error);
-			err_signal();
+			return;
 		}else{
 			commitChild = commitExec('git -C '+config.env+' commit -m "Emergency commit"',
 				function(error, stdout, stderr){
 					if (error !== null) {
 						console.log('commit exec error: ' + error);
-						err_signal();
+						return;
 				    } else {
 				    	console.log(stdout);
 				    	pushChild = pushExec('git -C ' + config.env + ' push -u origin master',
 				    		function(error, stdout, stderr){
 				    			if (error !== null){
 				    				console.log('push exec error: ' + error);
-									err_signal();
+									return;
 				    			}else{
 				    				console.log(stdout);
-				    				end_signal();
+				    				console.log('\nYour Express-Push is gone!');
 				    			}
 			    		});
 				    }	
